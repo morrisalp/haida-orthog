@@ -46,8 +46,8 @@ class Converter:
     def _lachler_to_leer(self, text):
         voiced = "b d g gw dl j".split()
         unvoiced = "p t k kw tl ts".split()
+        exception_chars = "aiuáíúwy" + self.UNDERLINE
         for v, u in zip(voiced, unvoiced):
-            exception_chars = "aiuáíúwy" + self.UNDERLINE
             if v == "g":
                 # handle separately to avoid devoicing ng (e.g. gudáng)
                 text = re.sub(rf"([^n]){v}([^{exception_chars}])", rf"\g<1>{u}\g<2>", text)
@@ -60,11 +60,13 @@ class Converter:
         return text
     
     def _leer_to_lachler(self, text):
-        voiced = "b d g gw dl j".split()
-        unvoiced = "p t k kw tl ts".split()
+        voiced = "j b d g gw dl".split()
+        unvoiced = "ts p t k kw tl".split()
+        # ^ NOTE: j/ts first to avoid conflict with d/t
+        exception_chars = "aiuáíúwy" + self.UNDERLINE
         for v, u in zip(voiced, unvoiced):
-            ...
-
+            text = re.sub(rf"([^n]){u}([^{exception_chars}])", rf"\g<1>{v}\g<2>", text)
+            text = re.sub(rf"([^n]){u}$", rf"\g<1>{v}", text)
         return text
 
     def _lachler_to_cp(self, text):
