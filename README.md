@@ -15,3 +15,4 @@ streamlit run src/app.py
 ## TODO
 
 * Add unit tests
+* Handle Unicode normalization correctly

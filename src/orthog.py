@@ -1,17 +1,25 @@
 import re
-
+# import unicodedata
 
 class Converter:
     
     SCHEMES = ["Lachler", "Texting", "Leer", "Enrico", "Swanton", "Lachler-CopyPaste"]
+    UNDERLINE = "g̱"[-1]
 
     def __init__(self):
         self.mappings = {
             ("Lachler", "Texting"): self._lachler_to_texting,
             ("Texting", "Lachler"): self._texting_to_lachler,
+            ("Lachler", "Leer"): self._lachler_to_leer,
+            ("Leer", "Lachler"): self._leer_to_lachler,
             ("Lachler", "Lachler-CopyPaste"): self._lachler_to_cp,
             ("Lachler-CopyPaste", "Lachler"): self._cp_to_lachler,
         }
+
+    def _normalize(self, text):
+        # TODO: Normalization to avoid e.g. combining diacritic vs. single char
+        # return unicodedata.normalize('NFD', text)
+        return text
     
     def _lachler_to_texting(self, text):
         equivs = "ḵ g̱ x̱ ĝ x̂".split()
@@ -33,6 +41,30 @@ class Converter:
         # NOTE: Can't handle initial carons.
         text = re.sub(r"([^ ])G", r"\g<1>ĝ", text)
         text = re.sub(r"([^ ])X", r"\g<1>x̂", text)
+        return text
+    
+    def _lachler_to_leer(self, text):
+        voiced = "b d g gw dl j".split()
+        unvoiced = "p t k kw tl ts".split()
+        for v, u in zip(voiced, unvoiced):
+            exception_chars = "aiuáíúwy" + self.UNDERLINE
+            if v == "g":
+                # handle separately to avoid devoicing ng (e.g. gudáng)
+                text = re.sub(rf"([^n]){v}([^{exception_chars}])", rf"\g<1>{u}\g<2>", text)
+                text = re.sub(rf"([^n]){v}$", rf"\g<1>{u}", text)
+            else:
+                if v == "d":
+                    exception_chars += "l" # e.g. g̱ándlaay; don't devoice d
+                text = re.sub(rf"{v}([^{exception_chars}])", rf"{u}\g<1>", text)
+                text = re.sub(rf"{v}$", u, text)
+        return text
+    
+    def _leer_to_lachler(self, text):
+        voiced = "b d g gw dl j".split()
+        unvoiced = "p t k kw tl ts".split()
+        for v, u in zip(voiced, unvoiced):
+            ...
+
         return text
 
     def _lachler_to_cp(self, text):
@@ -59,6 +91,10 @@ class Converter:
         """
         Convert text from one transliteration scheme to another.
         """
+
+        # Normalization to avoid e.g. combining diacritic vs. single char
+        text = self._normalize(text)
+
         if source == target:
             return text
         

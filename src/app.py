@@ -1,5 +1,5 @@
 import streamlit as st
-from orthog import Converter #SCHEMES, convert_transliteration
+from orthog import Converter
 
 
 def main():
@@ -28,6 +28,7 @@ def main():
     # Process button
     if st.button("Convert"):
         if input_text:
+
             # Process the text
             st.subheader("Transliteration Results:")
             
