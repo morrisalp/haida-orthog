@@ -16,6 +16,7 @@ class Converter:
             ("Lachler-CopyPaste", "Lachler"): self._cp_to_lachler,
             ("Lachler", "IPA"): self._lachler_to_ipa,
             ("Lachler", "Enrico"): self._lachler_to_enrico,
+            ("Enrico", "Lachler"): self._enrico_to_lachler,
         }
 
     def _normalize(self, text):
@@ -147,6 +148,23 @@ class Converter:
         for x, y in zip(equivs, equivs_):
             text = text.replace(x, y)
         # TODO: syllable boundaries, doubling to make tone predictable
+
+        return text
+
+    def _enrico_to_lachler(self, text):
+        text = text.lower()
+
+        # TODO: predict tone (before removing . etc.)
+        # TODO: ch/ts/j
+
+        text = text.replace(".", "").replace("-", "")
+        # pinch character copy-pasting from Enrico to regular apostrophe:
+        text = text.replace("‘", "'")
+
+        equivs = "q r c G X 7".split()
+        equivs_ = "ḵ g̱ x ĝ x̂ '".split()
+        for x, y in zip(equivs, equivs_):
+            text = text.replace(x, y)
 
         return text
 
