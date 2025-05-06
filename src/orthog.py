@@ -67,7 +67,7 @@ class Converter:
         voiced = "j b d g gw dl".split()
         unvoiced = "ts p t k kw tl".split()
         # ^ NOTE: j/ts first to avoid conflict with d/t
-        exception_chars = "aiuáíúwy" + self.UNDERLINE
+        exception_chars = "aiuáíúwy'" + self.UNDERLINE
         for v, u in zip(voiced, unvoiced):
             text = re.sub(rf"([^n]){u}([^{exception_chars}])", rf"\g<1>{v}\g<2>", text)
             text = re.sub(rf"([^n]){u}$", rf"\g<1>{v}", text)
