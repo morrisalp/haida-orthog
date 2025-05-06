@@ -3,7 +3,7 @@ import re
 
 class Converter:
     
-    SCHEMES = ["Lachler", "Texting", "Leer", "Enrico", "Swanton", "Lachler-CopyPaste", "IPA"]
+    SCHEMES = ["Lachler", "Texting", "Leer", "Enrico", "Lachler-CopyPaste", "IPA"]
     UNDERLINE = "g̱"[-1]
 
     def __init__(self):
