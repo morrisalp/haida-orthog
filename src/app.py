@@ -20,7 +20,7 @@ def main():
     # Select input scheme
     input_scheme = st.selectbox(
         "Input scheme",
-        Converter.SCHEMES
+        Converter.INPUT_SCHEMES
     )
 
     converter = Converter()
@@ -35,7 +35,7 @@ def main():
             # Display output in each scheme
             for scheme in Converter.SCHEMES:
                 # if scheme != input_scheme:
-                st.write(f"**{scheme} scheme:**")
+                st.write(f"**{scheme}:**")
                 converted_text = converter.convert_transliteration(input_text, input_scheme, scheme)
                 st.text(converted_text)
         else:
