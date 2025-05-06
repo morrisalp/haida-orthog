@@ -3,7 +3,7 @@ import re
 
 class Converter:
     
-    SCHEMES = ["Lachler", "Texting", "Leer", "Enrico", "Swanton", "Lachler-CopyPaste"]
+    SCHEMES = ["Lachler", "Texting", "Leer", "Enrico", "Swanton", "Lachler-CopyPaste", "IPA"]
     UNDERLINE = "g̱"[-1]
 
     def __init__(self):
@@ -14,6 +14,7 @@ class Converter:
             ("Leer", "Lachler"): self._leer_to_lachler,
             ("Lachler", "Lachler-CopyPaste"): self._lachler_to_cp,
             ("Lachler-CopyPaste", "Lachler"): self._cp_to_lachler,
+            ("Lachler", "IPA"): self._lachler_to_ipa,
         }
 
     def _normalize(self, text):
@@ -83,6 +84,48 @@ class Converter:
         for x, y in zip(equivs, equivs_):
             text = text.replace(x, y)
             text = text.replace(x.title(), y.title()) # handle uppercase
+        return text
+    
+    def _lachler_to_ipa(self, text):
+        text = text.lower()
+
+        equivs = "aa ii uu ee oo áa íi úu ée óo x̱ g̱ x̂ hl ng".split()
+        equivs_ = "aː iː uː eː oː áː íː úː éː óː ʜ ʡ χ ɬ ŋ".split()
+        for x, y in zip(equivs, equivs_):
+            text = text.replace(x, y)
+
+        asp = "p tl ch t ḵ k".split() # k-underline must come before k
+        asp_ipa = "pʰ tɬʰ tʃʰ tʰ qʰ kʰ".split()
+        for x, y in zip(asp, asp_ipa):
+            text = text.replace(x, y)
+            text = text.replace(y + "'", y[:-1] + "'") # fix ejectives
+        # fix extra aspir.
+        to_fix = "tʰʃʰ tʰɬʰ tʰs' tʰɬ'".split()
+        fixed = "tʃʰ tɬʰ ts' tɬ'".split()
+        for x, y in zip(to_fix, fixed):
+            text = text.replace(x, y)
+        
+        unasp = "b dl j d ĝ g".split()
+        unasp_ipa = "b̥ d̥ɮ̊ d̥ʒ̊ d̥ ɢ̥ ɡ̊".split()
+        for x, y in zip(unasp, unasp_ipa):
+            text = text.replace(x, y)
+
+        equivs = "y 'w 'j 'l".split()
+        equivs_ = "j wˀ jˀ lˀ".split()
+        for x, y in zip(equivs, equivs_):
+            text = text.replace(x, y)
+
+        # glottal stop        
+        text = re.sub(r"([aeiouáéíóú]ː)'([aeiouáéíóú])", r"\g<1>ʔ\g<2>", text)
+        text = re.sub(r"^([aeiouáéíóú])", r"ʔ\g<1>", text)
+        text = re.sub(r" ([aeiouáéíóú])", r" ʔ\g<1>", text)
+
+        # ejective symbol
+        text = text.replace("'", "ʼ")
+
+        # remove separator between /n/ and /g/
+        text = text.replace("-", "")
+
         return text
 
     def convert_transliteration(self,
