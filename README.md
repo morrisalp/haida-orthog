@@ -16,3 +16,4 @@ streamlit run src/app.py
 
 * Add unit tests
 * Handle Unicode normalization correctly
+* Syllable boundaries and doubling in Enrico

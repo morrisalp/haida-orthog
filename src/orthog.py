@@ -15,6 +15,7 @@ class Converter:
             ("Lachler", "Lachler-CopyPaste"): self._lachler_to_cp,
             ("Lachler-CopyPaste", "Lachler"): self._cp_to_lachler,
             ("Lachler", "IPA"): self._lachler_to_ipa,
+            ("Lachler", "Enrico"): self._lachler_to_enrico,
         }
 
     def _normalize(self, text):
@@ -125,6 +126,27 @@ class Converter:
 
         # remove separator between /n/ and /g/
         text = text.replace("-", "")
+
+        return text
+
+    def _lachler_to_enrico(self, text):
+        text = text.lower()
+        equivs = "ḵ g̱ x c̱ ĝ x̂ ".split()
+        equivs_ = "q r c x G X".split()
+        # ^ note: c̱ because x became c
+        for x, y in zip(equivs, equivs_):
+            text = text.replace(x, y)
+        
+        # glottal stop
+        text = re.sub(r"([aeiouáéíóú])'([aeiouáéíóúwyl])", r"\g<1>7\g<2>", text)
+        text = re.sub(r"^([aeiouáéíóúwyl])", r"7\g<1>", text)
+        text = re.sub(r" ([aeiouáéíóúwyl])", r" 7\g<1>", text)
+
+        equivs = "á é í ó ú ".split()
+        equivs_ = "a e i o u".split()
+        for x, y in zip(equivs, equivs_):
+            text = text.replace(x, y)
+        # TODO: syllable boundaries, doubling to make tone predictable
 
         return text
 
