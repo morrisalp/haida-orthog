@@ -12,14 +12,14 @@ def main():
     )
 
     st.title("Haida Orthography Converter")
-    st.write("Enter text in one scheme to see it in all other schemes.")
+    st.write("Enter text in one orthography to see it in all other orthography.")
     
     # Input text area
     input_text = st.text_area("Input text", height=150, value="Dáagw dámaan X̱aad Kíhl ta ḵ'áalangaay gudáng?")
     
     # Select input scheme
     input_scheme = st.selectbox(
-        "Input scheme",
+        "Input orthography",
         Converter.INPUT_SCHEMES
     )
 
