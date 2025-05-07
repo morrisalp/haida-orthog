@@ -108,8 +108,8 @@ class Converter:
         for x, y in zip(to_fix, fixed):
             text = text.replace(x, y)
         
-        unasp = "b dl j d ĝ g".split()
-        unasp_ipa = "b̥ d̥ɮ̊ d̥ʒ̊ d̥ ɢ̥ ɡ̊".split()
+        unasp = "d b dl j ĝ g".split() # d must come first
+        unasp_ipa = "d̥ b̥ d̥ɮ̊ d̥ʒ̊ ɢ̥ ɡ̊".split()
         for x, y in zip(unasp, unasp_ipa):
             text = text.replace(x, y)
 
@@ -129,7 +129,7 @@ class Converter:
         # remove separator between /n/ and /g/
         text = text.replace("-", "")
 
-        # devoiced to unvoiced unasp.
+        # # devoiced to unvoiced unasp.
         equivs = "b̥ d̥ɮ̊ d̥ʒ̊ d̥ ɢ̥ ɡ̊".split()
         equivs_ = "p tɬ tʃ t q k".split()
         for x, y in zip(equivs, equivs_):
