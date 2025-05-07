@@ -3,16 +3,16 @@ import re
 
 class Converter:
     
-    SCHEMES = ["Lachler", "Texting", "Leer", "Enrico", "Lachler-CopyPaste", "IPA"]
-    INPUT_SCHEMES = ["Lachler", "Texting", "Leer", "Enrico", "Lachler-CopyPaste"]
+    SCHEMES = ["Lachler", "Texting", "Classic", "Enrico", "Lachler-CopyPaste", "IPA"]
+    INPUT_SCHEMES = ["Lachler", "Texting", "Classic", "Enrico", "Lachler-CopyPaste"]
     UNDERLINE = "g̱"[-1]
 
     def __init__(self):
         self.mappings = {
             ("Lachler", "Texting"): self._lachler_to_texting,
             ("Texting", "Lachler"): self._texting_to_lachler,
-            ("Lachler", "Leer"): self._lachler_to_leer,
-            ("Leer", "Lachler"): self._leer_to_lachler,
+            ("Lachler", "Classic"): self._lachler_to_classic,
+            ("Classic", "Lachler"): self._classic_to_lachler,
             ("Lachler", "Lachler-CopyPaste"): self._lachler_to_cp,
             ("Lachler-CopyPaste", "Lachler"): self._cp_to_lachler,
             ("Lachler", "IPA"): self._lachler_to_ipa,
@@ -47,7 +47,7 @@ class Converter:
         text = re.sub(r"([^ ])X", r"\g<1>x̂", text)
         return text
     
-    def _lachler_to_leer(self, text):
+    def _lachler_to_classic(self, text):
         voiced = "b d g gw dl j".split()
         unvoiced = "p t k kw tl ts".split()
         exception_chars = "aiuáíúwy" + self.UNDERLINE
@@ -63,7 +63,7 @@ class Converter:
                 text = re.sub(rf"{v}$", u, text)
         return text
     
-    def _leer_to_lachler(self, text):
+    def _classic_to_lachler(self, text):
         voiced = "j b d g gw dl".split()
         unvoiced = "ts p t k kw tl".split()
         # ^ NOTE: j/ts first to avoid conflict with d/t
